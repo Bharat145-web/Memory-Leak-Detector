@@ -1,5 +1,3 @@
-# Memory-Leak-Detector
-
 # MLDA - Memory Leak Detector & Code Analyzer
 
 A comprehensive, web-based Operating System (OS) project that detects memory leaks in user-provided code (initially focused on C/C++), provides detailed analysis, and suggests direct solutions to fix them. This project is developed by a 4-member B.Tech team for 5th semester OS principles course.

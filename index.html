@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="theme-color" content="#1E40AF">
+        <meta name="msapplication-navbutton-color" content="#1E40AF">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#1E40AF">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="canonical" href="https://adityapandey-dev.github.io/Memory-Leak-Detector/" />
+    <meta name="description" content="Universal Memory Leak Detection and Code Analysis Tool - Analyze C, C++, JavaScript, Python, Java, Rust, Go code for memory leaks">
+        <meta name="keywords" content="memory leak detector, code analyzer, static analysis, C++, memory management, code quality, debugging tool, performance optimization, memory profiler, leak detection">
+    <meta name="author" content="MLDA Team">
+    
+    
+    <meta property="og:type" content="website">
+        <meta property="og:url" content="https://adityapandey-dev.github.io/Memory-Leak-Detector/">
+    <meta property="og:title" content="MLDA - Memory Leak Detector & Code Analyzer">
+        <meta property="og:description" content="Professional-grade memory leak detection and code analysis tool for C/C++ applications. Identify and fix memory leaks with ease.">
+        <meta property="og:image" content="https://adityapandey-dev.github.io/Memory-Leak-Detector/preview.png">
+    
+    
+    <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://adityapandey-dev.github.io/Memory-Leak-Detector/">
+    <meta name="twitter:title" content="MLDA - Memory Leak Detector & Code Analyzer">
+        <meta name="twitter:description" content="Professional-grade memory leak detection and code analysis tool for C/C++ applications. Identify and fix memory leaks with ease.">
+        <meta name="twitter:image" content="https://adityapandey-dev.github.io/Memory-Leak-Detector/preview.png">
+    
+    <title>MLDA - Memory Leak Detector & Code Analyzer</title>
+        <link rel="icon" type="image/svg+xml" href="favicon.svg">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="animations.css">
+    
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg">
+        Skip to main content
+    </a>
+    
+        <header class="relative bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-900 text-white shadow-2xl" role="banner">
+           
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                    </pattern>
+                    <rect width="100" height="100" fill="url(#grid)"/>
+                </svg>
+            </div>
+
+            <div class="absolute -top-20 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+            <div class="absolute -top-20 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+
+            <div class="relative container mx-auto px-4 py-6">
+                <div class="flex items-center justify-between gap-6">
+                   
+                    <div class="flex items-center gap-5 flex-1 min-w-0">
+                        <div class="flex-shrink-0 p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h1 class="relative text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-indigo-200 tracking-tight mb-1">
+                                <span class="inline-block transform hover:scale-105 transition-transform duration-300">MLDA</span>
+                                <span class="hidden sm:inline-block mx-2">|</span>
+                                <span class="block sm:inline-block text-xl sm:text-2xl font-semibold text-blue-200/90">Memory Leak Detector & Analyzer</span>
+                            </h1>
+                            <p class="text-sm sm:text-base text-blue-200/80 font-medium tracking-wide" role="doc-subtitle">
+                                Professional-Grade Memory Analysis & Code Quality Tool
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 flex-shrink-0">
+                       
+                        <button class="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 backdrop-blur-sm rounded-lg border border-blue-400/20 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center gap-2 text-sm font-medium">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            Documentation
+                        </button>
+                        <button id="darkModeToggle" 
+                                class="p-3 bg-blue-600/20 hover:bg-blue-600/30 backdrop-blur-sm rounded-lg border border-blue-400/20 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                aria-label="Toggle dark mode"
+                                title="Toggle dark mode">
+                            <svg id="darkModeIcon" class="w-5 h-5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                            <svg id="lightModeIcon" class="w-5 h-5 text-blue-100 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+    <main id="main-content" class="container mx-auto px-4 py-8" role="main">
+        <div class="grid grid-cols-1 lg:grid-cols-7 gap-8 h-full">
+            
+            <section class="lg:col-span-5 flex flex-col" aria-labelledby="editor-heading">
+                <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden flex flex-col flex-1 min-h-0">
+                   
+                    <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-indigo-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 id="editor-heading" class="text-xl font-bold text-gray-900">Code Editor</h2>
+                                    <p class="text-xs text-gray-500 mt-0.5">Write or paste your code here</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                    <label for="languageSelect" class="sr-only">Programming Language</label>
+                                    <select id="languageSelect" 
+                                            class="bg-transparent border-0 text-sm font-medium text-gray-700 focus:outline-none focus:ring-0 cursor-pointer"
+                                            aria-label="Select programming language">
+                                        <option value="c">C</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="java">Java</option>
+                                        <option value="rust">Rust</option>
+                                        <option value="go">Go</option>
+                                        <option value="html">HTML</option>
+                                        <option value="css">CSS</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                   
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex-shrink-0">
+                        <div class="flex flex-wrap gap-2 items-center" role="toolbar" aria-label="Editor actions">
+                            <button onclick="loadSampleCode()" 
+                                    class="btn-load-sample bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                                    aria-label="Load sample code"
+                                    title="Load sample code (Ctrl+L)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span>Load Sample</span>
+                            </button>
+                            <button id="analyzeBtn" 
+                                    onclick="analyzeCode()" 
+                                    class="btn-analyze bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                                    aria-label="Analyze code for memory leaks"
+                                    title="Analyze memory (Ctrl+S)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                                <span>Analyze Memory</span>
+                            </button>
+                            <div class="h-6 w-px bg-gray-300 mx-1"></div>
+                            <button onclick="clearEditor()" 
+                                    class="btn-clear bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                                    aria-label="Clear code editor"
+                                    title="Clear editor (Ctrl+K)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                                <span>Clear</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="code-editor-wrapper relative flex-1 min-h-0 flex flex-col">
+                        <label for="codeEditor" class="sr-only">Code Editor</label>
+                        <div class="code-editor-container relative bg-gray-50 rounded-lg border-2 border-gray-300 overflow-hidden flex flex-col flex-1 min-h-0">
+                            <div class="code-editor-header bg-gray-100 border-b border-gray-200 px-4 py-2 flex items-center justify-between flex-shrink-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-gray-600">Code Editor</span>
+                                    <span id="lineCount" class="text-xs text-gray-500">0 lines</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" 
+                                            onclick="copyCode()" 
+                                            class="text-xs text-gray-600 hover:text-gray-800 px-2 py-1 rounded transition"
+                                            aria-label="Copy code"
+                                            title="Copy code (Ctrl+C)">
+                                        📋 Copy
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea id="codeEditor" 
+                                      class="w-full flex-1 min-h-0 p-4 border-0 rounded-none code-editor focus:outline-none font-mono text-sm resize-none overflow-auto" 
+                                      placeholder="Enter your code here..." 
+                                      spellcheck="false"
+                                      aria-label="Code editor for entering source code"
+                                      aria-describedby="editor-description"
+                                      role="textbox"
+                                      aria-multiline="true"
+                                      wrap="off"></textarea>
+                            <div class="code-editor-footer bg-gray-100 border-t border-gray-200 px-4 py-1 flex items-center justify-between flex-shrink-0">
+                                <span class="text-xs text-gray-500">Press Ctrl+S to analyze, Ctrl+K to clear</span>
+                                <span id="charCount" class="text-xs text-gray-500">0 characters</span>
+                            </div>
+                        </div>
+                        <p id="editor-description" class="sr-only">Enter your code in the selected programming language to analyze for memory leaks</p>
+                    </div>
+                </div>
+            </section>
+            <aside class="lg:col-span-2 flex flex-col" aria-labelledby="stats-heading">
+                <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden flex flex-col flex-1 min-h-0">
+                   
+                    <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 id="stats-heading" class="text-xl font-bold text-gray-900">Memory Statistics</h2>
+                                <p class="text-xs text-gray-500 mt-0.5">Real-time analysis metrics</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex-1 overflow-y-auto">
+                        <div class="space-y-3" role="list" aria-label="Memory statistics">
+                            <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all" role="listitem">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-blue-500 rounded-lg">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700" aria-label="Total allocations">Total Allocations</p>
+                                            <p class="text-xs text-gray-500">Memory allocated</p>
+                                        </div>
+                                    </div>
+                                    <span id="totalAllocations" class="text-2xl font-bold text-blue-600" aria-live="polite">0</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-14">calls</p>
+                            </div>
+                            
+                            <div class="stat-card bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all" role="listitem">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-green-500 rounded-lg">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700" aria-label="Total frees">Total Frees</p>
+                                            <p class="text-xs text-gray-500">Memory released</p>
+                                        </div>
+                                    </div>
+                                    <span id="totalFrees" class="text-2xl font-bold text-green-600" aria-live="polite">0</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-14">calls</p>
+                            </div>
+                            
+                            <div class="stat-card bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all" role="listitem">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-red-500 rounded-lg">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700" aria-label="Memory leaks">Memory Leaks</p>
+                                            <p class="text-xs text-gray-500">Unfreed memory</p>
+                                        </div>
+                                    </div>
+                                    <span id="memoryLeaks" class="text-2xl font-bold text-red-600" aria-live="polite">0</span>
+                        </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-14">leaks</p>
+                            </div>
+                            
+                            <div class="stat-card bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all" role="listitem">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-orange-500 rounded-lg">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700" aria-label="Leaked bytes">Leaked Bytes</p>
+                                            <p class="text-xs text-gray-500">Memory size leaked</p>
+                                        </div>
+                                    </div>
+                                    <span id="leakedBytes" class="text-2xl font-bold text-orange-600" aria-live="polite">0 B</span>
+                        </div>
+                            </div>
+                            
+                            <div class="stat-card bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all" role="listitem">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-purple-500 rounded-lg">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700" aria-label="Critical issues">Critical Issues</p>
+                                            <p class="text-xs text-gray-500">Code quality warnings</p>
+                                        </div>
+                                    </div>
+                                    <span id="criticalIssues" class="text-2xl font-bold text-purple-600" aria-live="polite">0</span>
+                        </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-14">issues</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200" role="img" aria-label="Memory distribution chart">
+                            <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H11V2.512A9.025 9.025 0 0120.488 9z"></path>
+                                </svg>
+                                Memory Distribution
+                            </h3>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <canvas id="memoryChart" class="w-full" aria-label="Pie chart showing memory distribution"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <section class="mt-8 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden" aria-labelledby="tabs-heading">
+            <h2 id="tabs-heading" class="sr-only">Analysis Results Tabs</h2>
+            <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+                <nav class="flex -mb-px px-6" role="tablist" aria-label="Analysis result tabs">
+                    <button data-tab="leaks" 
+                            class="tab-btn active px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600"
+                            role="tab"
+                            aria-selected="true"
+                            aria-controls="leaks-tab"
+                            id="leaks-tab-btn">
+                        Memory Leaks
+                    </button>
+                    <button data-tab="analysis" 
+                            class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="analysis-tab"
+                            id="analysis-tab-btn">
+                        Code Analysis
+                    </button>
+                    <button data-tab="timeline" 
+                            class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="timeline-tab"
+                            id="timeline-tab-btn">
+                        Memory Timeline
+                    </button>
+                    <button data-tab="recommendations" 
+                            class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="recommendations-tab"
+                            id="recommendations-tab-btn">
+                        Recommendations
+                    </button>
+                </nav>
+            </div>
+
+            <div id="leaks-tab" 
+                 class="tab-content active p-8"
+                 role="tabpanel"
+                 aria-labelledby="leaks-tab-btn"
+                 aria-hidden="false">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 bg-red-100 rounded-lg">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Detected Memory Leaks</h3>
+                </div>
+                <div id="leaksList" class="space-y-4" role="region" aria-live="polite" aria-label="Memory leaks list">
+                    <p class="text-gray-500 text-center py-8">No analysis performed yet. Click "Analyze Memory" to start.</p>
+                </div>
+            </div>
+
+            <div id="analysis-tab" 
+                 class="tab-content p-8"
+                 role="tabpanel"
+                 aria-labelledby="analysis-tab-btn"
+                 aria-hidden="true">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Code Analysis Report</h3>
+                </div>
+                <div id="analysisContent" role="region" aria-live="polite" aria-label="Code analysis results">
+                    <p class="text-gray-500 text-center py-8">No analysis performed yet. Click "Analyze Memory" to start.</p>
+                </div>
+            </div>
+
+            <div id="timeline-tab" 
+                 class="tab-content p-8"
+                 role="tabpanel"
+                 aria-labelledby="timeline-tab-btn"
+                 aria-hidden="true">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 bg-indigo-100 rounded-lg">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Memory Usage Timeline</h3>
+                </div>
+                <div class="timeline-chart-container" style="position: relative; height: 400px;">
+                    <canvas id="timelineChart" aria-label="Line chart showing memory usage over time"></canvas>
+                </div>
+            </div>
+
+            <div id="recommendations-tab" 
+                 class="tab-content p-8"
+                 role="tabpanel"
+                 aria-labelledby="recommendations-tab-btn"
+                 aria-hidden="true">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Best Practices & Recommendations</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                        <h4 class="font-semibold text-blue-800 mb-2">1. Always Free Allocated Memory</h4>
+                        <p class="text-gray-700">Ensure every malloc/calloc/realloc call has a corresponding free() call. Use tools like Valgrind to verify.</p>
+                    </div>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                        <h4 class="font-semibold text-green-800 mb-2">2. Check for NULL Pointers</h4>
+                        <p class="text-gray-700">Always check if memory allocation succeeded before using the pointer. malloc() returns NULL on failure.</p>
+                    </div>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                        <h4 class="font-semibold text-yellow-800 mb-2">3. Use Safe String Functions</h4>
+                        <p class="text-gray-700">Prefer strncpy() over strcpy(), snprintf() over sprintf() to prevent buffer overflows.</p>
+                    </div>
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                        <h4 class="font-semibold text-purple-800 mb-2">4. Implement Proper Error Handling</h4>
+                        <p class="text-gray-700">Handle allocation failures gracefully. Clean up already allocated memory before returning on error.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <h4 class="font-semibold text-red-800 mb-2">5. Use Memory Debugging Tools</h4>
+                        <p class="text-gray-700">Leverage tools like Valgrind, AddressSanitizer, or Dr. Memory to detect leaks during development.</p>
+                    </div>
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded">
+                        <h4 class="font-semibold text-indigo-800 mb-2">6. Follow RAII Principles</h4>
+                        <p class="text-gray-700">In C++, use smart pointers (unique_ptr, shared_ptr) to automatically manage memory. In C, consider wrapper functions.</p>
+                    </div>
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded">
+                        <h4 class="font-semibold text-teal-800 mb-2">7. Regular Code Reviews</h4>
+                        <p class="text-gray-700">Conduct thorough code reviews focusing on memory management patterns and potential leaks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+  
+    <footer class="bg-gray-800 text-white py-4 mt-8" role="contentinfo">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm">&copy; 2024 MLDA - Memory Leak Detector & Code Analyzer. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="notifications.js"></script>
+    <script src="accessibility.js"></script>
+    <script src="clipboard.js"></script>
+    <script src="darkMode.js"></script>
+    <script src="history.js"></script>
+    <script src="share.js"></script>
+    <script src="samples.js"></script>
+    <script src="astParser.js"></script>
+    <script src="memoryAnalyzer.js"></script>
+    <script src="utils.js"></script>
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
